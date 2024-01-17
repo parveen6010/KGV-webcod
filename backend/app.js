@@ -2,8 +2,10 @@ import express from "express";
 import { config } from "dotenv";
 import { Contact } from "./models/contact.js";
 import paymentRoutes from "./routes/paymentRoutes.js";
-import cors from "cors";
+
 import nodemailer from "nodemailer"; // Import nodemailer
+import { Vistuser } from "./models/visituser.js";
+import cors from "cors";
 
 config({ path: "./config/config.env" });
 export const app = express();
@@ -17,6 +19,18 @@ app.use("/api", paymentRoutes);
 app.get("/api/getkey", (req, res) =>
   res.status(200).json({ key: process.env.RAZORPAY_API_KEY })
 );
+
+ app.post("/vistuser",async(req,res) =>{
+  try {
+    let vistuser = new Vistuser(req.body);
+    let resuser =  await vistuser.save();
+    res.send(resuser);
+  } catch (error) {
+    res.send(500).send(error.message);
+  }
+ });
+
+
 
 app.post("/register", async (req, resp) => {
   try {
@@ -32,6 +46,8 @@ app.post("/register", async (req, resp) => {
     resp.status(500).send(error.message);
   }
 });
+
+
 
 // Function to send email notification
 

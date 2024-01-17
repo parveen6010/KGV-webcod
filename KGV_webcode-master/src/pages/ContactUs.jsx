@@ -25,24 +25,25 @@ export const ContactUs = () => {
  
   const handleOnSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       const response = await axios.post("http://localhost:5000/register", {
-        body: JSON.stringify(formData),
+        name: firstName,
+        lastname: lastName,
+        email,
+        address,
+        query,
       });
-
-      if (response.ok) {
-        // Handle successful response
+  
+      if (response.status === 200) {
         console.log("Query submitted successfully!");
       } else {
-        // Handle error response
         console.error("Failed to submit query.");
       }
     } catch (error) {
       console.error("Error submitting query:", error);
     }
-
-    // Reset form data
+  
     setFormData({
       firstName: "",
       lastName: "",
@@ -51,6 +52,9 @@ export const ContactUs = () => {
       query: "",
     });
   };
+  
+
+
   return (
     <div className="w-full overflow-hidden relative">
       <img src={wave} className="absolute -z-10" />
@@ -143,7 +147,7 @@ export const ContactUs = () => {
             <div className=" h-full ">
             <label className=" h-full">
                 <p className="mb-1 text-[0.875rem] font-semibold leading-[1.375rem] text-richblack-5">
-                  Query <sup className="text-pink-200">*</sup>
+                  query <sup className="text-pink-200">*</sup>
                 </p>
                 <textarea
                   required
@@ -168,7 +172,7 @@ export const ContactUs = () => {
                 type="submit"
                 className="mt-6 rounded-[8px] bg-[#3EC70B] p-1 py-[8px] px-[12px] font-medium text-black"
               >
-                Raise a Query
+                Raise a query
               </button>
             </div>
           </form>
