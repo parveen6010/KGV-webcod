@@ -37,90 +37,97 @@ export const paymentVerification = async (req, res) => {
 
     console.log("payment done now checking");
 
-    try{var instance = new Razorpay({ key_id: 'rzp_test_QKHlS7OlJZ9Vgn', key_secret: 'AX2FH1gl38cJDzkGT3uWhlqh' })
-
-    const response = await instance.payments.fetch(razorpay_payment_id);
-    console.log(response);
-  }
-    catch(error){
-      console.log("Errrooroor");
-
-    }
+    
+      var instance = new Razorpay({ key_id: 'rzp_test_QKHlS7OlJZ9Vgn', key_secret: 'AX2FH1gl38cJDzkGT3uWhlqh' })
+    var response = await instance.payments.fetch(razorpay_payment_id);
+    
+      console.log(response);
+      
+      console.log(response.notes.firstname);
+      //  const  firstname = response.notes.firstname;
+      //  const lastname  = response.notes.lastname;
+      //   const email = response.notes.email;
+      //  const address = response.notes.address;
+      //  const phonenumber = response.notes.phonenumber;
 
         if (isAuthentic) {
+           const  firstname = response.notes.firstname;
+       const lastname  = response.notes.lastname;
+        const email = response.notes.email;
+       const address = response.notes.address;
+       const phonenumber = response.notes.phonenumber;
+                 
             // Database comes here
-            // var instance = new Razorpay({ key_id: 'rzp_test_QKHlS7OlJZ9Vgn', key_secret: 'AX2FH1gl38cJDzkGT3uWhlqh' })
+            await Payment.create({
+              firstname,
+              lastname, 
+              email, 
+              address,
+              phonenumber,
+                razorpay_order_id,
+                razorpay_payment_id,
+                razorpay_signature
+                }); 
+           
+      // console.log(email);
+      // console.log(response.notes.lastname);
+      // console.log(response.notes.email);
 
-            //     const response = await instance.payments.fetch(razorpay_payment_id);
-            //     console.log(response);
-
-            // await Payment.create({
-            //     razorpay_order_id,
-            //     razorpay_payment_id,
-            //     razorpay_signature,
-            //     firstname,
-            //      lastname, 
-            //      email, 
-            //      address,
-            //      phonenumber
-            //     }); 
-
-
-                // function sendEmailNotification(formData) {
-                //     const transporter = nodemailer.createTransport({
-                //       service: "gmail",
-                //       auth: {
-                //         user: "parveenprajapati9310@gmail.com", // Update with your Gmail address
-                //         pass: "davajvjvmpyfjlri", // Update with your Gmail password
-                //       },
-                //     });
+                function sendEmailNotification() {
+                    const transporter = nodemailer.createTransport({
+                      service: "gmail",
+                      auth: {
+                        user: "parveenprajapati9310@gmail.com", // Update with your Gmail address
+                        pass: "davajvjvmpyfjlri", // Update with your Gmail password
+                      },
+                    });
                   
                    
-                //     const mailOptions = {
-                //       from: "parveenprajapati9310@gmail.com",
-                //       to: "parveenprajapati6010@gmail.com",
-                //       subject: "Customer booking Detail",
-                //       html: `<p>New registration details11:</p>
-                //       <p>Name: ${firstname}</p>
-                //        <p>Lastname: ${lastname}</p>
-                //        <p>Email: ${email}</p>
-                //        <p>Address: ${address}</p>
-                //        <p>Address: ${phonenumber}</p>
-                //        <p>razorpay_order_id: ${formData.razorpay_order_id}</p>
-                //       <p>razorpay_payment_id: ${formData.razorpay_payment_id}</p>`,
-                //     };
+                    const mailOptions = {
+                      from: "parveenprajapati9310@gmail.com",
+                      to: "parveenprajapati6010@gmail.com",
+                      subject: "Customer booking Detail",
+                      html: `<p>New registration details11:</p>
+                      <p>Name: ${firstname}</p>
+                       <p>Lastname: ${lastname}</p>
+                       <p>Email: ${email}</p>
+                       <p>Address: ${address}</p>
+                       <p>Address: ${phonenumber}</p>
+                       <p>razorpay_order_id: ${razorpay_order_id}</p>
+                      <p>razorpay_payment_id: ${razorpay_payment_id}</p>`,
+                    };
                   
 
-                //     const mailOptions1 = {
-                //         from: "parveenprajapati9310@gmail.com",
-                //         to: "ishantsah58@gmail.com",
-                //         subject: "Customer booking Detail",
-                //         html: `<p>New registration details11:</p>
-                //         <p>Name: ${firstname}</p>
-                //          <p>Lastname: ${lastname}</p>
-                //          <p>Email: ${email}</p>
-                //          <p>Address: ${address}</p>
-                //          <p>Address: ${phonenumber}</p>
-                //          <p>razorpay_order_id: ${formData.razorpay_order_id}</p>
-                //         <p>razorpay_payment_id: ${formData.razorpay_payment_id}</p>`,
-                //       };
+                    const mailOptions1 = {
+                        from: "parveenprajapati9310@gmail.com",
+                        to: "ishantsah58@gmail.com",
+                        subject: "Customer booking Detail",
+                        html: `<p>New registration details11:</p>
+                        <p>Name: ${firstname}</p>
+                         <p>Lastname: ${lastname}</p>
+                         <p>Email: ${email}</p>
+                         <p>Address: ${address}</p>
+                         <p>Address: ${phonenumber}</p>
+                         <p>razorpay_order_id: ${razorpay_order_id}</p>
+                        <p>razorpay_payment_id: ${razorpay_payment_id}</p>`,
+                      };
                   
-                //     transporter.sendMail(mailOptions, function (error, info) {
-                //       if (error) {
-                //         console.log("Email error: " +error);
-                //       } else {
-                //         console.log("Email sent: " + info.response);
-                //       }
-                //     });
-                //     transporter.sendMail(mailOptions1, function (error, info) {
-                //         if (error) {
-                //           console.log("Email error: " +error);
-                //         } else {
-                //           console.log("Email sent: " + info.response);
-                //         }
-                //       });
-                //   }
-                //   sendEmailNotification(req.body);
+                    transporter.sendMail(mailOptions, function (error, info) {
+                      if (error) {
+                        console.log("Email error: " +error);
+                      } else {
+                        console.log("Email sent: " + info.response);
+                      }
+                    });
+                    transporter.sendMail(mailOptions1, function (error, info) {
+                        if (error) {
+                          console.log("Email error: " +error);
+                        } else {
+                          console.log("Email sent: " + info.response);
+                        }
+                      });
+                  }
+                  sendEmailNotification();
                   
                 
              
@@ -130,34 +137,34 @@ export const paymentVerification = async (req, res) => {
             );
             } else {
 
-                // function sendEmailNotification(formData) {
-                //     const transporter = nodemailer.createTransport({
-                //       service: "gmail",
-                //       auth: {
-                //         user: "parveenprajapati9310@gmail.com", // Update with your Gmail address
-                //         pass: "davajvjvmpyfjlri", // Update with your Gmail password
-                //       },
-                //     });
+                function sendEmailNotification() {
+                    const transporter = nodemailer.createTransport({
+                      service: "gmail",
+                      auth: {
+                        user: "parveenprajapati9310@gmail.com", // Update with your Gmail address
+                        pass: "davajvjvmpyfjlri", // Update with your Gmail password
+                      },
+                    });
                   
-                //     const mailOptions = {
-                //       from: "parveenprajapati9310@gmail.com",
-                //       to: formData.email,
-                //       subject: "Customer booking Detail",
-                //       html: `<p>New registration details:</p>
-                //              <p>payment failed</p>
-                //              <p>again try</p>`,
-                //     };
+                    const mailOptions = {
+                      from: "parveenprajapati9310@gmail.com",
+                      to: email,
+                      subject: "Customer booking Detail",
+                      html: `<p>New registration details:</p>
+                             <p>payment failed</p>
+                             <p>again try</p>`,
+                    };
                   
-                //     transporter.sendMail(mailOptions, function (error, info) {
-                //       if (error) {
-                //         console.log("Email error: " +error);
-                //       } else {
-                //         console.log("Email sent: " + info.response);
-                //       }
-                //     });
+                    transporter.sendMail(mailOptions, function (error, info) {
+                      if (error) {
+                        console.log("Email error: " +error);
+                      } else {
+                        console.log("Email sent: " + info.response);
+                      }
+                    });
                   
-                //   }
-                //   sendEmailNotification(req.body);
+                  }
+                  sendEmailNotification();
                   
                 
             res.status(400).json({

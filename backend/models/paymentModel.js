@@ -13,10 +13,6 @@ const paymentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  orderno: {
-    type: String,
-    required: true,
-  },
   address: {
     type: String,
     required: true,

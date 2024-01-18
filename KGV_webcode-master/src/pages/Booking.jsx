@@ -74,11 +74,12 @@ if (response.status === 200) {
     order_id: order.id, 
     callback_url: "http://localhost:5000/api/paymentverification",
     notes: {
-      "email": {firstname,
-        lastname,
-        email,
-        address,
-        phonenumber}
+      "email": email,
+      "firstname" :firstname,
+       "lastname": lastname,
+        "email":email, 
+       "address":address,
+      "phonenumber" : phonenumber
 
   },
   
