@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { Payment } from "../models/paymentModel.js"; // Adjust the path accordingly
 import nodemailer from "nodemailer"; // Import nodemailer
 import Razorpay from "razorpay";
+import { Vistuser } from "../models/visituser.js";
 
 export const checkout = async (req, res) => {
     const options = {
@@ -18,6 +19,16 @@ export const checkout = async (req, res) => {
         order,
     });
 };
+
+async function deleteVistuserByEmail(email) {
+  try {
+      // Logic to delete user with the given email from Vistuser
+      await Vistuser.findOneAndDelete({ email: email }).exec();
+      console.log(`User with email ${email} deleted from Vistuser.`);
+  } catch (error) {
+      console.error(`Error deleting user: ${error}`);
+  }
+}
 
 export const paymentVerification = async (req, res) => {  
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature  } = req.body;
@@ -44,12 +55,7 @@ export const paymentVerification = async (req, res) => {
       console.log(response);
       
       console.log(response.notes.firstname);
-      //  const  firstname = response.notes.firstname;
-      //  const lastname  = response.notes.lastname;
-      //   const email = response.notes.email;
-      //  const address = response.notes.address;
-      //  const phonenumber = response.notes.phonenumber;
-
+  
         if (isAuthentic) {
            const  firstname = response.notes.firstname;
        const lastname  = response.notes.lastname;
@@ -73,6 +79,9 @@ export const paymentVerification = async (req, res) => {
       // console.log(response.notes.lastname);
       // console.log(response.notes.email);
 
+     
+
+
                 function sendEmailNotification() {
                     const transporter = nodemailer.createTransport({
                       service: "gmail",
@@ -92,7 +101,7 @@ export const paymentVerification = async (req, res) => {
                        <p>Lastname: ${lastname}</p>
                        <p>Email: ${email}</p>
                        <p>Address: ${address}</p>
-                       <p>Address: ${phonenumber}</p>
+                       <p>Phone No.: ${phonenumber}</p>
                        <p>razorpay_order_id: ${razorpay_order_id}</p>
                       <p>razorpay_payment_id: ${razorpay_payment_id}</p>`,
                     };
@@ -107,7 +116,7 @@ export const paymentVerification = async (req, res) => {
                          <p>Lastname: ${lastname}</p>
                          <p>Email: ${email}</p>
                          <p>Address: ${address}</p>
-                         <p>Address: ${phonenumber}</p>
+                         <p>Phone No.: ${phonenumber}</p>
                          <p>razorpay_order_id: ${razorpay_order_id}</p>
                         <p>razorpay_payment_id: ${razorpay_payment_id}</p>`,
                       };
@@ -129,9 +138,7 @@ export const paymentVerification = async (req, res) => {
                   }
                   sendEmailNotification();
                   
-                
-             
-
+                 deleteVistuserByEmail(email);
             res.redirect(
             `http://localhost:3000/paymentsuccess?reference=${razorpay_payment_id}`
             );
